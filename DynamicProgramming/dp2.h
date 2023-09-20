@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <map>
 #include <list>
 #include <memory>
 
@@ -14,31 +13,11 @@
 //***Optimization Problem
 //	가장 짧은 배열은?
 //		ㄴ모든 경우를 구해야함
+
+
+
 namespace memoization
 {
-
-	std::ostream& operator << (std::ostream& os, std::vector<int>* v)
-	{
-		if (v == nullptr)
-		{
-			std::cout << "nullptr";
-			return os;
-		}
-
-		std::cout << "{";
-		for (int i = 0; i < v->size(); i++)
-		{
-			std::cout << (*v)[i];
-			if (i < v->size() - 1)
-			{
-				std::cout << ",";
-			}
-		}
-		std::cout << "}";
-		return os;
-	}
-
-
 	//BruteForce
 	// m : sum, n : numbers의 크기
 	// TC : O(n^m)
@@ -72,7 +51,7 @@ namespace memoization
 	// m : sum, n : numbers의 크기
 	// TC : O(m*n)
 	// SC : O(m)
-	bool CanAccumulate2(const std::vector<int>& numbers, int sum, std::map<int, bool>& memo)
+	bool CanAccumulate(const std::vector<int>& numbers, int sum, std::map<int, bool>& memo)
 	{
 		if (memo.count(sum) == 1)
 		{
@@ -92,7 +71,7 @@ namespace memoization
 		//recursive
 		for (auto e : numbers)
 		{
-			if (CanAccumulate2(numbers, sum - e, memo))
+			if (CanAccumulate(numbers, sum - e, memo))
 			{
 				memo[sum] = true;
 				return true;
@@ -100,7 +79,7 @@ namespace memoization
 		}
 
 		memo[sum] = false;
-		return false;
+		return memo[sum];
 	}
 
 	//Memoization
@@ -133,7 +112,7 @@ namespace memoization
 			{
 				r->push_back(e);
 				memo[sum] = r;
-				return memo[sum];
+				return r;
 			}
 		}
 		memo[sum] = nullptr;
@@ -261,7 +240,8 @@ namespace memoization
 		{
 			if (target.find(e) == 0)
 			{
-				count += HowManyGenerate(strings, target.substr(e.size()));
+				std::string subs = target.substr(e.size());
+				count += HowManyGenerate(strings, subs);
 			}
 		}
 		return count;
@@ -289,7 +269,8 @@ namespace memoization
 		{
 			if (target.find(e) == 0)
 			{
-				count += HowManyGenerate(strings, target.substr(e.size()), memo);
+				std::string subs = target.substr(e.size());
+				count += HowManyGenerate(strings, subs, memo);
 			}
 		}
 
@@ -297,41 +278,7 @@ namespace memoization
 		return memo[target];
 	}
 
-	using string2d = std::list<std::list<std::string>>;
-
-	std::ostream& operator << (std::ostream& os, string2d v)
-	{
-		std::cout << "{" << std::endl;
-		int i{}, j{};
-
-		for (auto e1 : v)
-		{
-			j = 0;
-			std::cout << "    {";
-			for (auto e2 : e1)
-			{
-				std::cout << e2;
-
-				if (j < e1.size() - 1)
-				{
-					std::cout << ",";
-				}
-				j++;
-			}
-			std::cout << "}";
-
-			if (i < v.size() - 1)
-			{
-				std::cout << ",";
-			}
-			std::cout << std::endl;
-			i++;
-		}
-		std::cout << "}" << std::endl;
-
-		return os;
-	}
-
+	using string2d = std::list<std::list<std::string>>;	
 	// TC : O(n^m * m)
 	// SC : O(m^2)
 	string2d AllCombination(const std::vector<std::string>& strings, std::string target)
@@ -358,4 +305,6 @@ namespace memoization
 		}
 		return v;
 	}
+
+
 }
